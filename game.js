@@ -31,14 +31,17 @@ function moveEverything() {
 function drawEverything() {
   colorRect(0, 0, canvas.width, canvas.height, 'black')
   colorRect(0, 250, 10, 100, 'white')
-  // colorRect(ballX, 100, 10, 10, 'red')
-  canvasContext.fillStyle = 'red'
-  canvasContext.beginPath()
-  canvasContext.arc(ballX, 100, 10, 0, Math.PI * 2, true)
-  canvasContext.fill()
+  colorCircle(ballX, 150, 10, 'white')
 }
 
 function colorRect(leftX, topY, width, height, drawColor) {
   canvasContext.fillStyle = drawColor
   canvasContext.fillRect(leftX, topY, width, height)
+}
+
+function colorCircle(centerX, centerY, radius, color) {
+  canvasContext.fillStyle = drawColor
+  canvasContext.beginPath()
+  canvasContext.arc(centerX, centerY, radius, 0, Math.PI * 2, true)
+  canvasContext.fill()
 }
