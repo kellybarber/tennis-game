@@ -6,7 +6,9 @@ let ballY = 50
 let ballSpeedY = 15
 
 let paddleOneY = 250
+let paddleTwoY = 250
 const PADDLE_HEIGHT = 100
+const PADDLE_WIDTH = 10
 
 function calculateMousePosition(evt) {
   let rect = canvas.getBoundingClientRect()
@@ -31,24 +33,51 @@ window.onload = () => {
 
   canvas.addEventListener('mousemove', (evt) => {
     let mousePosition = calculateMousePosition(evt) 
-    paddleOneY = mousePosition.y
+    paddleOneY = mousePosition.y - (PADDLE_HEIGHT / 2)
+    // paddleTwoY = mousePosition.y - (PADDLE_HEIGHT / 2)
   })
 }
 
-function moveEverything() {
-  ballX = ballX + ballSpeedX
-  ballY = ballY + ballSpeedY
+function ballReset() {
+  ballSpeedX = -ballSpeedX
+  // (Math.random() < 0.5 ? -1 : 1)
+  ballX = canvas.height / 2
+  ballY = canvas.width / 2
+}
 
-  if (ballX > canvas.width) {
-    ballSpeedX = -ballSpeedX
+function computerMovement() {
+  if (paddleTwoY < ballY) {
+    paddleTwoY += 6
+  } else {
+    paddleTwoY -= 6
   }
+}
+
+function moveEverything() {
+  computerMovement()
+
+  ballX += ballSpeedX
+  ballY += ballSpeedY
+
   if (ballX < 0) {
-    ballSpeedX = -ballSpeedX
+    if (ballY > paddleOneY && ballY < paddleOneY + PADDLE_HEIGHT) {
+      ballSpeedX = -ballSpeedX
+    } else {
+      ballReset()
+    }
   }
-  if (ballY > canvas.height) {
-    ballSpeedY = -ballSpeedY
+  if (ballX > canvas.width) {
+    // ballSpeedX = -ballSpeedX
+    if (ballY > paddleTwoY && ballY < paddleTwoY + PADDLE_HEIGHT) {
+      ballSpeedX = -ballSpeedX
+    } else {
+      ballReset()
+    }
   }
   if (ballY < 0) {
+    ballSpeedY = -ballSpeedY
+  }
+  if (ballY > canvas.height) {
     ballSpeedY = -ballSpeedY
   }
 }
@@ -57,7 +86,9 @@ function drawEverything() {
   // Game Background
   colorRect(0, 0, canvas.width, canvas.height, 'black')
   // Player One Paddle
-  colorRect(0, paddleOneY, 10, 100, 'white')
+  colorRect(0, paddleOneY, PADDLE_WIDTH, PADDLE_HEIGHT, 'white')
+  // Player Two Paddle (Computer)
+  colorRect(canvas.width - PADDLE_WIDTH, paddleTwoY, PADDLE_WIDTH, PADDLE_HEIGHT, 'white')
   // Game Ball
   colorCircle(ballX, ballY, 10, 'white')
 }
