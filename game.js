@@ -5,6 +5,9 @@ let ballSpeedX = 15
 let ballY = 50
 let ballSpeedY = 15
 
+let playerOneScore = 0
+let playerTwoScore = 0
+
 let paddleOneY = 250
 let paddleTwoY = 250
 const PADDLE_HEIGHT = 100
@@ -46,10 +49,12 @@ function ballReset() {
 }
 
 function computerMovement() {
-  if (paddleTwoY < ballY) {
-    paddleTwoY += 6
-  } else {
-    paddleTwoY -= 6
+  const paddleTwoYCenter = paddleTwoY + (PADDLE_HEIGHT / 2)
+
+  if (paddleTwoYCenter < ballY - 35) {
+    paddleTwoY += 14
+  } else if (paddleTwoYCenter > ballY + 35) {
+    paddleTwoY -= 14
   }
 }
 
@@ -64,6 +69,7 @@ function moveEverything() {
       ballSpeedX = -ballSpeedX
     } else {
       ballReset()
+      playerTwoScore ++
     }
   }
   if (ballX > canvas.width) {
@@ -72,6 +78,7 @@ function moveEverything() {
       ballSpeedX = -ballSpeedX
     } else {
       ballReset()
+      playerOneScore ++
     }
   }
   if (ballY < 0) {
@@ -85,12 +92,18 @@ function moveEverything() {
 function drawEverything() {
   // Game Background
   colorRect(0, 0, canvas.width, canvas.height, 'black')
+
   // Player One Paddle
   colorRect(0, paddleOneY, PADDLE_WIDTH, PADDLE_HEIGHT, 'white')
+
   // Player Two Paddle (Computer)
   colorRect(canvas.width - PADDLE_WIDTH, paddleTwoY, PADDLE_WIDTH, PADDLE_HEIGHT, 'white')
+  
   // Game Ball
   colorCircle(ballX, ballY, 10, 'white')
+
+  canvasContext.fillText(playerOneScore, 100, 100)
+  canvasContext.fillText(playerTwoScore, canvas.width - 100, 100)
 }
 
 function colorRect(leftX, topY, width, height, drawColor) {
