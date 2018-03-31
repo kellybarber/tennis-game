@@ -67,6 +67,10 @@ function moveEverything() {
   if (ballX < 0) {
     if (ballY > paddleOneY && ballY < paddleOneY + PADDLE_HEIGHT) {
       ballSpeedX = -ballSpeedX
+
+      let deltaY = ballY - (paddleOneY + PADDLE_HEIGHT / 2)
+      ballSpeedY = deltaY * 0.35
+      
     } else {
       ballReset()
       playerTwoScore ++
@@ -98,7 +102,7 @@ function drawEverything() {
 
   // Player Two Paddle (Computer)
   colorRect(canvas.width - PADDLE_WIDTH, paddleTwoY, PADDLE_WIDTH, PADDLE_HEIGHT, 'white')
-  
+
   // Game Ball
   colorCircle(ballX, ballY, 10, 'white')
 
