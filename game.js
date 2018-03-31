@@ -9,6 +9,8 @@ let playerOneScore = 0
 let playerTwoScore = 0
 const WINNING_SCORE = 3
 
+let showWinScreen = false
+
 let paddleOneY = 250
 let paddleTwoY = 250
 const PADDLE_HEIGHT = 100
@@ -25,6 +27,15 @@ function calculateMousePosition(evt) {
   }
 }
 
+// Restarts game on click
+function handleMouseClick() {
+  if (showWinScreen) {
+    playerOneScore = 0
+    playerTwoScore = 0
+    showWinScreen = false
+  }
+}
+
 window.onload = () => {
   canvas = document.getElementById('gameCanvas')
   canvasContext = canvas.getContext('2d')
@@ -35,6 +46,8 @@ window.onload = () => {
     drawEverything() 
   }, 1000/framesPerSecond)
 
+  canvas.addEventListener('mousedown', handleMouseClick)
+
   canvas.addEventListener('mousemove', (evt) => {
     let mousePosition = calculateMousePosition(evt) 
     paddleOneY = mousePosition.y - (PADDLE_HEIGHT / 2)
@@ -44,8 +57,9 @@ window.onload = () => {
 
 function ballReset() {
   if (playerOneScore >= WINNING_SCORE || playerTwoScore >= WINNING_SCORE) {
-    playerOneScore = 0
-    playerTwoScore = 0
+    // playerOneScore = 0
+    // playerTwoScore = 0
+    showWinScreen = true
   }
 
   ballSpeedX = -ballSpeedX
@@ -64,6 +78,10 @@ function computerMovement() {
 }
 
 function moveEverything() {
+  if (showWinScreen) {
+    return
+  }
+
   computerMovement()
 
   ballX += ballSpeedX
@@ -104,7 +122,27 @@ function moveEverything() {
   }
 }
 
+function drawNet() {
+  for(let i = 0; i < canvas.height; i += 40) {
+    colorRect(canvas.width / 2 - 1, i, 2, 20, 'white')
+  }
+}
+
 function drawEverything() {
+  colorRect(0, 0, canvas.width, canvas.height, 'black')
+  
+  if (showWinScreen) {
+    canvasContext.fillStyle = 'white'
+    canvasContext.fillText('Click to Continue', 350, 500)
+
+    if (playerOneScore >= WINNING_SCORE) {
+      canvasContext.fillText('Left Player Won', 350, 200)
+    } else if (playerTwoScore >= WINNING_SCORE) {
+      canvasContext.fillText('Right Player Won', 350, 200)
+    }
+    return
+  }
+
   // Game Background
   colorRect(0, 0, canvas.width, canvas.height, 'black')
 
@@ -116,6 +154,8 @@ function drawEverything() {
 
   // Game Ball
   colorCircle(ballX, ballY, 10, 'white')
+
+  drawNet()
 
   canvasContext.fillText(playerOneScore, 100, 100)
   canvasContext.fillText(playerTwoScore, canvas.width - 100, 100)
