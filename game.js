@@ -7,6 +7,7 @@ let ballSpeedY = 15
 
 let playerOneScore = 0
 let playerTwoScore = 0
+const WINNING_SCORE = 3
 
 let paddleOneY = 250
 let paddleTwoY = 250
@@ -37,13 +38,17 @@ window.onload = () => {
   canvas.addEventListener('mousemove', (evt) => {
     let mousePosition = calculateMousePosition(evt) 
     paddleOneY = mousePosition.y - (PADDLE_HEIGHT / 2)
-    // paddleTwoY = mousePosition.y - (PADDLE_HEIGHT / 2)
+    // paddleTwoY = mousePosition.y - (PADDLE_HEIGHT / 2) // Allows mouse to move both paddles
   })
 }
 
 function ballReset() {
+  if (playerOneScore >= WINNING_SCORE || playerTwoScore >= WINNING_SCORE) {
+    playerOneScore = 0
+    playerTwoScore = 0
+  }
+
   ballSpeedX = -ballSpeedX
-  // (Math.random() < 0.5 ? -1 : 1)
   ballX = canvas.height / 2
   ballY = canvas.width / 2
 }
@@ -72,22 +77,28 @@ function moveEverything() {
       ballSpeedY = deltaY * 0.35
       
     } else {
-      ballReset()
       playerTwoScore ++
+      ballReset()
     }
   }
+
   if (ballX > canvas.width) {
-    // ballSpeedX = -ballSpeedX
     if (ballY > paddleTwoY && ballY < paddleTwoY + PADDLE_HEIGHT) {
       ballSpeedX = -ballSpeedX
+
+      let deltaY = ballY - (paddleTwoY + PADDLE_HEIGHT / 2)
+      ballSpeedY = deltaY * 0.35
+
     } else {
-      ballReset()
       playerOneScore ++
+      ballReset() 
     }
   }
+
   if (ballY < 0) {
     ballSpeedY = -ballSpeedY
   }
+
   if (ballY > canvas.height) {
     ballSpeedY = -ballSpeedY
   }
